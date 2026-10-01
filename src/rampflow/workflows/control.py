@@ -128,3 +128,6 @@ class RampWorkflowControl:
 
     def publish_apron_movement_safety(self, operation_id: str, subject: str, at: datetime, action: Callable[[], T], requirements: tuple[Decision, ...] = ()) -> OperationReceipt:
         return self._guard(operation_id, "apron.movement.safety.decided", subject, at, action, requirements=requirements)
+
+    def publish_ground_agent_handover(self, operation_id: str, subject: str, at: datetime, action: Callable[[], T], requirements: tuple[Decision, ...] = ()) -> OperationReceipt:
+        return self._guard(operation_id, "ground.agent.handover.published", subject, at, action, requirements=requirements)
