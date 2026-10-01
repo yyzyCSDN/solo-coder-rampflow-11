@@ -57,6 +57,22 @@ class WorkflowControlTests(unittest.TestCase):
         self.assertEqual(calls, [])
         self.assertEqual(control.stream.head, 0)
 
+    def test_publish_handler_handover_only_after_package_is_sealed(self):
+        control = RampWorkflowControl()
+        published = []
+
+        def seal():
+            package = {"package_id": "H1", "digest": "immutable"}
+            published.append(package)
+            return package
+
+        first = control.publish_handler_handover_package("op-5", "F5", self.at, seal)
+        second = control.publish_handler_handover_package("op-5", "F5", self.at, seal)
+
+        self.assertIs(first, second)
+        self.assertEqual(len(published), 1)
+        self.assertEqual(control.stream.head, 1)
+        self.assertEqual(first.event.topic, "handler.handover.package.published")
 
 if __name__ == "__main__":
     unittest.main()
